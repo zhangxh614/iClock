@@ -1,8 +1,9 @@
 #include <LedControl.h>  
-  
-int DIN = 12;  
-int CS =  11;  
-int CLK = 10;  
+#include <SoftwareSerial.h>
+
+int DIN = 11;  
+int CS =  10;  
+int CLK = 13;  
 
 byte ans[8][19];
 byte num[10][8][4]={{{0,0,0,0},{1,1,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,1,0}},
@@ -18,12 +19,14 @@ byte num[10][8][4]={{{0,0,0,0},{1,1,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0}
                     };
                     
 byte ch[8][2]={{0,0},{0,0},{1,0},{1,0},{0,0},{1,0},{1,0},{0,0}};
+char msg[15]={'0','0','0','0','0'};
 
-
+SoftwareSerial BT(12, 9); // RX, TX
 LedControl lc=LedControl(DIN,CLK,CS,4);  
   
 void setup(){  
- Serial.begin(9600);    
+ Serial.begin(9600);
+     
  delay(100);
  lc.shutdown(0,false);       //启动时，MAX72XX处于省电模式  
  lc.setIntensity(0,2);       //将亮度设置为合适的值(0-8）
@@ -31,7 +34,15 @@ void setup(){
 }  
   
 void loop(){
-  add(1,2,4,3);
+  int k=0;
+  while(Serial.available()>0) {
+    msg[k++]=Serial.read();
+  }
+  Serial.println((int)msg[0]-48);
+  Serial.println((int)msg[1]-48);
+  Serial.println((int)msg[2]-48);
+  Serial.println((int)msg[3]-48);
+  add((int)msg[0]-48,(int)msg[1]-48,(int)msg[2]-48,(int)msg[3]-48);
   display(ans,19);
 }  
   
@@ -71,7 +82,7 @@ byte getNum(byte row[]) {
   int sum=0;
   for(int j=7;j>=0;j--){
       sum+=(row[7-j]<<j);
-      Serial.println(sum);
+      //Serial.println(sum);
   }
   return (byte)sum;
 }
