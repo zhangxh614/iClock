@@ -15,10 +15,7 @@ def get_unseen_number():
         tpy, data = Mail.search(None, 'UNSEEN')
         data = data[0].split()
         return len(data)
-        Mail.logout()
     except Exception as e:
         print('imap error: %s' % e)
         Mail.close()
-
-
-print(get_unseen_number())
+        return None

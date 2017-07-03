@@ -6,4 +6,4 @@ def get_time():
     return time.localtime()[3:5]
 
 
-print(get_time())
+print('TIME: ', get_time())

@@ -5,7 +5,7 @@ import serial
 import serial.tools.list_ports
 
 
-def get_ser_name():
+def get_ser():
     port_list = list(serial.tools.list_ports.comports())
 
     if len(port_list) <= 0:
@@ -18,7 +18,7 @@ def get_ser_name():
 
         ser = serial.Serial(port_serial, 9600, timeout=60)
 
-        return ser.name
+        return ser
 
 
-print(get_ser_name())
+print('COMPORT: ' + get_ser().name)
