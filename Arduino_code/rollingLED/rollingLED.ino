@@ -26,6 +26,7 @@ LedControl lc=LedControl(DIN,CLK,CS,4);
   
 void setup(){  
  Serial.begin(9600);
+ BT.begin(9600);
  delay(100);
  pinMode(A3,OUTPUT);//R
  pinMode(A5,OUTPUT);//G
@@ -41,8 +42,8 @@ void setup(){
 void loop(){
   
   int k=0;
-  while(Serial.available()>0) {
-    msg[k++]=Serial.read();
+  while(BT.available()>0) {
+    msg[k++] = BT.read();
   }
   //Serial.println((int)msg[0]-48);
   //Serial.println((int)msg[1]-48);
@@ -53,19 +54,19 @@ void loop(){
     digitalWrite(A3,HIGH);
     digitalWrite(A5,LOW);
     digitalWrite(A6,LOW);
-    Serial.println("red");
+    BT.println("red");
   }
   else if(msg[4]=='2') {
     digitalWrite(A3,LOW);
     digitalWrite(A5,HIGH);
     digitalWrite(A6,LOW);
-    Serial.println("gr");
+    BT.println("gr");
   }
   else { 
     digitalWrite(A3,LOW);
     digitalWrite(A5,LOW);
     digitalWrite(A6,LOW);
-    Serial.println("an");
+    BT.println("an");
   }
   
   display(ans,19);
