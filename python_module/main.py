@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin python3
 from get_time import get_time
 from look_for_port import get_ser
 from read_imap_number import get_unseen_number
