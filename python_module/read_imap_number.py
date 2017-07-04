@@ -1,11 +1,12 @@
 import imaplib
-try:
-    from mail_account import user_name, pass_wd
-except:
-    print('account not found')
 
 
 def get_unseen_number():
+    try:
+        from mail_account import user_name, pass_wd
+    except:
+        # print('account not found')
+        return None
     Mail = imaplib.IMAP4_SSL("mails.tsinghua.edu.cn")
 
     try:

@@ -17,6 +17,7 @@ def trans2(i):
 
 
 if __name__ == '__main__':
+    time.sleep(1)
     ser = get_ser()
 
     while True:
