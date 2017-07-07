@@ -1,9 +1,17 @@
 #include <LedControl.h>  
 #include <SoftwareSerial.h>
+#include <Servo.h>
 //ble TX->D12 RX->D9 +5V->5V GND->GND
 int DIN = 11;  
 int CS =  10;  
 int CLK = 13;  
+const int TrigPin = 2; 
+const int EchoPin = 3; 
+float distance; 
+int count_number = 0;
+bool is_open = false;
+Servo myservo;
+
 
 byte ans[8][19];
 byte num[10][8][4]={{{0,0,0,0},{1,1,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,1,0}},
@@ -37,10 +45,13 @@ void setup(){
  lc.shutdown(0,false);       //启动时，MAX72XX处于省电模式  
  lc.setIntensity(0,2);       //将亮度设置为合适的值(0-8）
  lc.clearDisplay(0);         //清除显示  
+ pinMode(TrigPin, OUTPUT);   //超声波
+ pinMode(EchoPin, INPUT); 
+
+ myservo.attach(5);
 }  
-  
+
 void loop(){
-  
   int k=0;
   while(BT.available()>0) {
     msg[k++] = BT.read();
@@ -68,10 +79,33 @@ void loop(){
     digitalWrite(A6,LOW);
     BT.println("an");
   }
-  
   display(ans,19);
+  //超声波
+  con_trash();
 }  
-  
+
+void con_trash(){
+  get_distance();
+  //计时器
+  if(is_open){
+    if(count_number == 12){
+      count_number = 0;
+      is_open = false;
+      myservo.write(90);
+    }
+    else{
+      count_number += 1;
+    }
+  }
+  else{
+      if(distance < 30){
+      myservo.write(20);
+      is_open = true;
+      count_number = 0;
+    }
+  }
+}
+
 //点阵显示函数  
 void printByte(byte character [])  
 {  
@@ -134,6 +168,19 @@ void display(byte whole[][19], int n){
       ans[k]=getNum(img[k]);
     }
     printByte(ans);
+    con_trash();
     delay(100);
   }
+}
+
+//超声波测距
+void get_distance(){
+  // 产生一个10us的高脉冲去触发TrigPin 
+        digitalWrite(TrigPin, LOW); 
+        delayMicroseconds(2); 
+        digitalWrite(TrigPin, HIGH); 
+        delayMicroseconds(10);
+        digitalWrite(TrigPin, LOW); 
+    // 检测脉冲宽度，并计算出距离
+        distance = pulseIn(EchoPin, HIGH) / 58.00;
 }

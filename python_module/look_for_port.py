@@ -12,7 +12,7 @@ def get_ser():
         return None
 
     else:
-        port_list_0 = list(port_list[0])
+        port_list_0 = list(port_list[-1])
 
         port_serial = port_list_0[0]
 
